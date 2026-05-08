@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angus Zou</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a0a;
+  --fg: #fafafa;
+  --muted: #666;
+  --accent: #f97316;
+  --accent2: #6366f1;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* Custom cursor dot */
+.cursor-dot {
+  position: fixed; width: 8px; height: 8px; background: var(--accent);
+  border-radius: 50%; pointer-events: none; z-index: 9999;
+  transition: transform 0.1s; mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%; pointer-events: none; z-index: 9998;
+  transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+}
+
+/* Navigation */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center;
+  mix-blend-mode: difference;
+}
+nav .logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem; font-weight: 700; letter-spacing: -0.03em;
+}
+nav .nav-links a {
+  color: var(--fg); text-decoration: none; margin-left: 3rem;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em;
+  opacity: 0.6; transition: opacity 0.3s;
+}
+nav .nav-links a:hover { opacity: 1; }
+
+/* Sections */
+section {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; padding: 4rem;
+}
+
+/* Hero */
+.hero {
+  flex-direction: column; gap: 2rem; text-align: center;
+  justify-content: center;
+}
+.hero-overline {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.3em;
+  color: var(--muted); opacity: 0; animation: fadeUp 1s 0.5s forwards;
+}
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(4rem, 12vw, 10rem); font-weight: 700;
+  letter-spacing: -0.05em; line-height: 0.9;
+  opacity: 0; animation: fadeUp 1s 0.8s forwards;
+}
+.hero h1 .stroke {
+  -webkit-text-stroke: 2px var(--fg); -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  font-size: 1.1rem; color: var(--muted); max-width: 500px;
+  line-height: 1.8; font-weight: 300;
+  opacity: 0; animation: fadeUp 1s 1.1s forwards;
+}
+.scroll-indicator {
+  position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  opacity: 0; animation: fadeUp 1s 1.5s forwards;
+}
+.scroll-indicator span {
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted);
+}
+.scroll-line {
+  width: 1px; height: 60px; background: linear-gradient(to bottom, var(--fg), transparent);
+  animation: scrollPulse 2s infinite;
+}
+
+/* About */
+.about { justify-content: flex-start; padding: 10rem 4rem; }
+.about-content {
+  max-width: 800px; margin-left: 10vw;
+}
+.section-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem; color: var(--accent); letter-spacing: 0.2em;
+  margin-bottom: 2rem; display: block;
+}
+.about-content h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; line-height: 1.3;
+  letter-spacing: -0.02em; margin-bottom: 2rem;
+}
+.about-content h2 strong { font-weight: 700; }
+.about-content p {
+  font-size: 1rem; color: var(--muted); line-height: 2; max-width: 600px;
+}
+
+/* Experience - horizontal scroll feel */
+.experience { flex-direction: column; align-items: flex-start; padding: 8rem 4rem; }
+.exp-header { margin-left: 10vw; margin-bottom: 4rem; }
+.exp-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.03em;
+}
+.exp-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 6vw;
+}
+.exp-card {
+  padding: 2.5rem; border: 1px solid #1a1a1a; border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;
+}
+.exp-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(249,115,22,0.03), transparent);
+  opacity: 0; transition: opacity 0.4s;
+}
+.exp-card:hover { border-color: #333; transform: translateY(-4px); }
+.exp-card:hover::before { opacity: 1; }
+.exp-card .period { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1rem; }
+.exp-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.exp-card .org { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+.exp-card p { font-size: 0.82rem; color: #555; line-height: 1.7; }
+
+/* Projects */
+.projects { flex-direction: column; align-items: flex-start; padding: 8rem 4rem; }
+.proj-header { margin-left: 10vw; margin-bottom: 4rem; }
+.proj-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.03em;
+}
+.proj-list {
+  width: 100%; max-width: 900px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 0;
+}
+.proj-item {
+  padding: 2.5rem 3rem; border-bottom: 1px solid #1a1a1a;
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2rem;
+  transition: all 0.3s; cursor: pointer;
+}
+.proj-item:hover { background: rgba(255,255,255,0.02); padding-left: 3.5rem; }
+.proj-item h3 { font-size: 1.2rem; font-weight: 500; margin-bottom: 0.3rem; }
+.proj-item p { font-size: 0.8rem; color: var(--muted); }
+.proj-item .arrow {
+  font-size: 1.5rem; color: var(--muted); transition: all 0.3s;
+}
+.proj-item:hover .arrow { color: var(--accent); transform: translateX(4px); }
+
+/* Education */
+.education {
+  flex-direction: column; align-items: center; text-align: center;
+  padding: 10rem 4rem; gap: 4rem;
+}
+.edu-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.03em;
+}
+.edu-timeline {
+  display: flex; gap: 4rem; flex-wrap: wrap; justify-content: center;
+}
+.edu-item { text-align: center; max-width: 250px; }
+.edu-item .year { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 0.8rem; }
+.edu-item h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.edu-item p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+/* Contact */
+.contact {
+  flex-direction: column; gap: 2rem; text-align: center;
+}
+.contact h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; letter-spacing: -0.04em;
+}
+.contact-links { display: flex; gap: 2rem; margin-top: 1rem; }
+.contact-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.8rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.8rem 1.5rem; border: 1px solid #222; border-radius: 30px;
+  transition: all 0.3s;
+}
+.contact-links a:hover { color: var(--fg); border-color: var(--accent); }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Photography strip */
+.photo-strip {
+  width: 100%; overflow: hidden; padding: 6rem 0;
+  position: relative;
+}
+.photo-strip::before, .photo-strip::after {
+  content: ''; position: absolute; top: 0; width: 200px; height: 100%;
+  z-index: 2; pointer-events: none;
+}
+.photo-strip::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.photo-strip::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.photo-track {
+  display: flex; gap: 1.5rem; animation: marquee 30s linear infinite;
+}
+.photo-placeholder {
+  min-width: 300px; height: 200px; background: #1a1a1a; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; color: #333; letter-spacing: 0.1em;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <div class="logo">ANGUS ZOU</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <span class="hero-overline">Computer Vision · AI Research · Photography</span>
+  <h1>ANGUS<br><span class="stroke">ZOU</span></h1>
+  <p class="hero-sub">MPhil researcher at HKU, exploring how machines perceive and reconstruct the visual world. Also a photographer capturing moments in between.</p>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-content reveal">
+    <span class="section-number">01 — ABOUT</span>
+    <h2>I build systems that <strong>see</strong>, and I capture what <strong>they can't</strong>.</h2>
+    <p>Currently pursuing my MPhil at The University of Hong Kong in Data and System Engineering. My research sits at the intersection of computer vision and deep learning — from human pose estimation to generative models. When I'm not training models, I'm out shooting street photography and landscapes.</p>
+  </div>
+</section>
+
+<div class="photo-strip">
+  <div class="photo-track">
+    <div class="photo-placeholder">YOUR PHOTO 1</div>
+    <div class="photo-placeholder">YOUR PHOTO 2</div>
+    <div class="photo-placeholder">YOUR PHOTO 3</div>
+    <div class="photo-placeholder">YOUR PHOTO 4</div>
+    <div class="photo-placeholder">YOUR PHOTO 5</div>
+    <div class="photo-placeholder">YOUR PHOTO 6</div>
+    <div class="photo-placeholder">YOUR PHOTO 1</div>
+    <div class="photo-placeholder">YOUR PHOTO 2</div>
+    <div class="photo-placeholder">YOUR PHOTO 3</div>
+    <div class="photo-placeholder">YOUR PHOTO 4</div>
+    <div class="photo-placeholder">YOUR PHOTO 5</div>
+    <div class="photo-placeholder">YOUR PHOTO 6</div>
+  </div>
+</div>
+
+<section class="experience" id="experience">
+  <div class="exp-header reveal">
+    <span class="section-number">02 — EXPERIENCE</span>
+    <h2>Where I've been</h2>
+  </div>
+  <div class="exp-grid">
+    <div class="exp-card reveal">
+      <div class="period">09/2024 — 08/2025</div>
+      <h3>Research Assistant</h3>
+      <div class="org">DASE HIS Lab, HKU</div>
+      <p>Human pose estimation under wild conditions. Validating and reproducing SOTA results, optimizing for VR-specific requirements.</p>
+    </div>
+    <div class="exp-card reveal">
+      <div class="period">06/2024 — 07/2024</div>
+      <h3>AI Research Assistant</h3>
+      <div class="org">Shaoxing Research Institute, ZJU</div>
+      <p>Optical chip design optimization with ML and LLMs. Deployed Llama-3 for data prediction pipelines. Achieved 85%+ accuracy.</p>
+    </div>
+    <div class="exp-card reveal">
+      <div class="period">06/2023 — 08/2023</div>
+      <h3>Data Science RA</h3>
+      <div class="org">SAAS Data Science Lab, HKU</div>
+      <p>Complex CV dataset preprocessing and analysis. Cross-functional collaboration on research design and implementation.</p>
+    </div>
+    <div class="exp-card reveal">
+      <div class="period">09/2021 — 04/2023</div>
+      <h3>Frontend Developer</h3>
+      <div class="org">CSSAUD, HKU</div>
+      <p>Built web apps serving 4k+ HKU students. React, Next.js, data processing with Python and Go.</p>
+    </div>
+  </div>
+</section>
+
+<section class="projects" id="projects">
+  <div class="proj-header reveal">
+    <span class="section-number">03 — PROJECTS</span>
+    <h2>Selected work</h2>
+  </div>
+  <div class="proj-list">
+    <div class="proj-item reveal">
+      <div>
+        <h3>CV Data Calibration Alignment App</h3>
+        <p>Python-based video frame labeling tool for 3D skeleton mapping and annotations</p>
+      </div>
+      <span class="arrow">→</span>
+    </div>
+    <div class="proj-item reveal">
+      <div>
+        <h3>Concept Extraction via Diffusion + Segmentation</h3>
+        <p>Unsupervised pipeline combining DiffSeg and ConceptExpress for visual concept discovery</p>
+      </div>
+      <span class="arrow">→</span>
+    </div>
+    <div class="proj-item reveal">
+      <div>
+        <h3>Human Pose Estimation in the Wild</h3>
+        <p>VR-optimized pose estimation with attention-based feature aggregation</p>
+      </div>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+</section>
+
+<section class="education" id="education">
+  <div class="reveal">
+    <span class="section-number">04 — EDUCATION</span>
+    <h2 class="edu-title">Education</h2>
+  </div>
+  <div class="edu-timeline reveal">
+    <div class="edu-item">
+      <div class="year">2025 — PRESENT</div>
+      <h3>MPhil, Data & System Engineering</h3>
+      <p>The University of Hong Kong</p>
+    </div>
+    <div class="edu-item">
+      <div class="year">2021 — 2025</div>
+      <h3>BA&S, Applied AI</h3>
+      <p>The University of Hong Kong</p>
+    </div>
+    <div class="edu-item">
+      <div class="year">2024 (Spring)</div>
+      <h3>Berkeley Global Access</h3>
+      <p>UC Berkeley</p>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="reveal">
+    <span class="section-number">05 — CONTACT</span>
+    <h2>Let's talk.</h2>
+    <div class="contact-links">
+      <a href="mailto:zouangus19@connect.hku.hk">Email</a>
+      <a href="https://linkedin.com/in/yongzhe-zou-4b76142a9">LinkedIn</a>
+      <a href="https://github.com/ZouAngus">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<script>
+// Custom cursor
+const dot = document.getElementById('dot');
+const ring = document.getElementById('ring');
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX - 4 + 'px';
+  dot.style.top = e.clientY - 4 + 'px';
+  ring.style.left = e.clientX - 20 + 'px';
+  ring.style.top = e.clientY - 20 + 'px';
+});
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
